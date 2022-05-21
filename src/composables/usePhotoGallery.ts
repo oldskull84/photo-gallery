@@ -9,8 +9,11 @@ import { Filesystem, Directory } from "@capacitor/filesystem";
 import { Storage } from "@capacitor/storage";
 
 const photos = ref<UserPhoto[]>([]);
+const PHOTO_STORAGE = "photos";
 
 export function usePhotoGallery() {
+  onMounted(loadSaved);
+
   const takePhoto = async () => {
     const photo = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
@@ -67,6 +70,30 @@ const savePicture = async (
     filepath: fileName,
     webviewPath: photo.webPath,
   };
+};
+
+const cachePhotos = () => {
+  Storage.set({
+    key: PHOTO_STORAGE,
+    value: JSON.stringify(photos.value),
+  });
+};
+
+watch(photos, cachePhotos);
+
+const loadSaved = async () => {
+  const photoList = await Storage.get({ key: PHOTO_STORAGE });
+  const photosInStorage = photoList.value ? JSON.parse(photoList.value) : [];
+
+  for (const photo of photosInStorage) {
+    const file = await Filesystem.readFile({
+      path: photo.filepath,
+      directory: Directory.Data,
+    });
+    photo.webviewPath = `data:image/jpeg;base64,${file.data}`;
+  }
+
+  photos.value = photosInStorage;
 };
 
 export interface UserPhoto {
