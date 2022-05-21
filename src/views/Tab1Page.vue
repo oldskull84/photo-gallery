@@ -11,7 +11,7 @@
           <ion-title size="large">Tab 1</ion-title>
         </ion-toolbar>
       </ion-header>
-    
+
       <ExploreContainer name="Tab 1 page" />
     </ion-content>
   </ion-page>
@@ -22,8 +22,27 @@ import { defineComponent } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
 
-export default  defineComponent({
+export default defineComponent({
   name: 'Tab1Page',
-  components: { ExploreContainer, IonHeader, IonToolbar, IonTitle, IonContent, IonPage }
+  ionViewDidEnter() {
+    console.log('Home page (lifecycle methhods) did enter');
+  },
+  ionViewDidLeave() {
+    console.log('Home page (lifecycle methhods) did leave');
+  },
+  ionViewWillEnter() {
+    console.log('Home page (lifecycle methhods) will enter');
+  },
+  ionViewWillLeave() {
+    console.log('Home page (lifecycle methhods) will leave');
+  },
+  components: {
+    ExploreContainer,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonPage
+  }
 });
 </script>
